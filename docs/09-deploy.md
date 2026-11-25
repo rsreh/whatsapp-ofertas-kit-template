@@ -75,6 +75,20 @@ evolution.seudominio.com {
 Atualize `PUBLIC_BASE_URL`, `SERVER_URL` e `EVOLUTION_API_URL` para as URLs
 públicas.
 
+## Railway template (1 clique)
+
+Para um deploy verdadeiro em 1 clique, publique um **Railway Template** a
+partir do arquivo `templates/railway-template.json` (serviços: evolution,
+postgres, redis, app). Passos resumidos:
+
+1. Faça fork do repositório na sua conta.
+2. No Railway, crie um template a partir do fork (ou importe o JSON).
+3. O template cria os 4 serviços e pede as variáveis marcadas como `required`.
+4. Após o deploy, gere domínios públicos para `evolution` e `app` e atualize
+   `SERVER_URL` e `PUBLIC_BASE_URL`.
+
+Enquanto o template não estiver publicado, use o fluxo manual da seção abaixo.
+
 ## Railway (recomendado para Evolution + app juntos)
 
 O Railway tem template oficial da Evolution API. O fluxo mais rápido:
