@@ -1,0 +1,93 @@
+# whatsapp-ofertas-kit
+
+> Kit público (MIT) para montar a sua própria automação de ofertas no WhatsApp:
+> buscar produtos, montar a mensagem, gerar o cartão de preview e publicar em um
+> grupo ou número que você controla. Usa a sua instância da Evolution API e as
+> suas chaves. Sem bot hospedado, sem credenciais de terceiros, sem lista de
+> números.
+
+Requisitos: Node 20.9+; Docker para a infraestrutura. Docs em pt-BR.
+
+## Começar
+
+- [README](README.md): visão geral, caminho de ouro em 5 comandos, FAQ.
+- [AGENTS.md](AGENTS.md): regras para agentes de código, invariantes, comandos.
+- [docs/00-decisao.md](docs/00-decisao.md): qual caminho seguir.
+- [checklists/primeiro-envio.md](checklists/primeiro-envio.md): do zero à
+  primeira mensagem.
+
+## Receitas
+
+- [recipes/node-cron](recipes/node-cron/README.md): caminho de ouro. CLI
+  (`preview`, `send`, `once`), servidor HTTP (`/health`, `/o/:token`, `/cron`,
+  `/send`) e agendador diário.
+- [recipes/nextjs-site](recipes/nextjs-site/README.md): painel Next.js 16 +
+  React 19, server action, preview card e `/api/cron`.
+
+## Núcleo
+
+- [packages/core/src/types.ts](packages/core/src/types.ts): contratos `Product`,
+  `WhatsAppProvider`, `ProductSource`, `Storage`, `SendResult`.
+- [packages/core/src/config.ts](packages/core/src/config.ts): validação de env.
+- [packages/core/src/providers/evolution.ts](packages/core/src/providers/evolution.ts):
+  provider Evolution (envio de texto/mídia, códigos de erro, timeout).
+- [packages/core/src/sources](packages/core/src/sources): `manual`, `opengraph`
+  (com SSRF), `shopee`.
+- [packages/core/src/links](packages/core/src/links): token HMAC e HTML de
+  preview com Open Graph.
+- [packages/core/src/message](packages/core/src/message): template e mensagem de
+  oferta.
+- [packages/core/src/daily.ts](packages/core/src/daily.ts): ciclo diário
+  idempotente.
+- [packages/core/test](packages/core/test): testes Vitest.
+
+## Infra
+
+- [infra/docker-evolution](infra/docker-evolution/README.md): compose da
+  Evolution API v2.3.7 + Postgres 16 + Redis 7.
+
+## Guias
+
+- [01 Conceitos](docs/01-conceitos.md): JID, preview, limites, opt-in, risco.
+- [02 Evolution API](docs/02-evolution-api.md): subir, criar instância, QR,
+  grupo, testes.
+- [03 Alternativas](docs/03-alternativas.md): Meta Cloud API, Z-API, Baileys.
+- [04 Produtos](docs/04-produtos.md): lista manual, Open Graph, Shopee.
+- [05 Mensagem](docs/05-mensagem.md): formatação, estrutura, limites.
+- [06 Preview card](docs/06-preview-card.md): por que links curtos falham e como
+  resolver com token assinado.
+- [07 Agendamento](docs/07-agendamento.md): trava diária, cron, Redis, retry.
+- [08 Segurança](docs/08-seguranca.md): segredos, Bearer, SSRF, LGPD, ban.
+- [09 Deploy](docs/09-deploy.md): VPS, systemd, Caddy, Vercel.
+- [10 Manutenção](docs/10-manutencao.md): versões, troubleshooting, contribuir.
+
+## Prompts e templates
+
+- [prompts](prompts/README.md): montar do zero, adaptar provedor, revisar
+  segurança, criar mensagens, depurar envio.
+- [templates/mensagens.md](templates/mensagens.md): variações de oferta.
+- [templates/produtos.json](templates/produtos.json): formato da lista manual.
+- [templates/github-actions-cron.yml](templates/github-actions-cron.yml) e
+  [templates/vercel.json](templates/vercel.json): agendamento externo.
+- [checklists/seguranca.md](checklists/seguranca.md) e
+  [checklists/go-live.md](checklists/go-live.md).
+
+## Comandos
+
+```bash
+npm run sync-core   # packages/core/src → recipes/*/src/core
+npm run typecheck   # core + node-cron + nextjs
+npm test            # Vitest do núcleo
+npm run check       # sync + typecheck + testes
+```
+
+## Escopo
+
+Apenas grupos/canais próprios com opt-in. Não faz disparo em massa, DM para
+desconhecidos, scraping de grupos ou contorno de banimento. A Evolution usa
+protocolo não-oficial (Baileys) e há risco de banimento; para operação comercial,
+considere a API oficial da Meta.
+
+## Licença
+
+MIT.

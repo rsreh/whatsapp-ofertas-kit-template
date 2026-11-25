@@ -1,0 +1,37 @@
+# Deploy no Render (https://render.com)
+# Importe este repositório; o Render vai ler este arquivo.
+services:
+  - type: web
+    name: whatsapp-ofertas-node-cron
+    runtime: docker
+    rootDir: recipes/node-cron
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: EVOLUTION_API_URL
+        sync: false
+      - key: EVOLUTION_API_KEY
+        sync: false
+      - key: EVOLUTION_INSTANCE
+        sync: false
+      - key: WHATSAPP_TARGET
+        sync: false
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: LINK_SECRET
+        sync: false
+      - key: CRON_SECRET
+        sync: false
+      - key: ADMIN_TOKEN
+        sync: false
+      - key: TIMEZONE
+        value: America/Sao_Paulo
+      - key: SEND_HOUR
+        value: "9"
+      - key: STATE_FILE
+        value: /tmp/state.json

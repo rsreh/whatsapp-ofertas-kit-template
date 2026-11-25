@@ -1,0 +1,28 @@
+# Configuração do gitleaks (https://github.com/gitleaks/gitleaks)
+#
+# Além das regras padrão, ignoramos os placeholders dos arquivos de exemplo.
+
+title = "whatsapp-ofertas-kit"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Placeholders e exemplos"
+paths = [
+  '''\.env\.example$''',
+  '''(^|/)docs/''',
+  '''(^|/)templates/''',
+  '''(^|/)README(\.en)?\.md$''',
+  '''(^|/)prompts/''',
+  '''(^|/)checklists/''',
+]
+
+regexes = [
+  '''troque-esta-chave''',
+  '''troque-por-uma-chave-forte''',
+  '''SUA_CHAVE''',
+  '''SEU_JID_AQUI''',
+  '''segredo-de-teste''',
+  '''uma-chave-aleatoria-com-32-caracteres''',
+]

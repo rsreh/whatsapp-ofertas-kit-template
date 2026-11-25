@@ -1,0 +1,25 @@
+{
+  "name": "whatsapp-ofertas-nextjs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Receita Next.js: painel para montar, pré-visualizar e enviar ofertas.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "sync-core": "node ../../scripts/sync-core.mjs ."
+  },
+  "dependencies": {
+    "next": "16.4.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "typescript": "^5.7.2"
+  }
+}

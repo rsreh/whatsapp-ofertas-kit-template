@@ -1,0 +1,24 @@
+[Unit]
+Description=whatsapp-ofertas
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/whatsapp-ofertas/recipes/node-cron
+ExecStart=/usr/bin/npm run start
+EnvironmentFile=/opt/whatsapp-ofertas/recipes/node-cron/.env
+Restart=always
+RestartSec=5
+User=ofertas
+Group=ofertas
+
+# Endurecimento básico
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/whatsapp-ofertas/recipes/node-cron/.data
+
+[Install]
+WantedBy=multi-user.target

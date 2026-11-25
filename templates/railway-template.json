@@ -1,0 +1,99 @@
+{
+  "name": "whatsapp-ofertas-kit",
+  "description": "Automação de ofertas no WhatsApp: Evolution API + app node-cron (preview, cron, envio).",
+  "icon": "https://raw.githubusercontent.com/SEU-USUARIO-GITHUB/whatsapp-ofertas-kit/main/docs/icon.png",
+  "services": [
+    {
+      "name": "evolution",
+      "source": {
+        "image": "atendai/evolution-api:v2.1.1"
+      },
+      "variables": {
+        "AUTHENTICATION_API_KEY": {
+          "description": "Chave global da Evolution API",
+          "required": true,
+          "generator": "secret"
+        },
+        "SERVER_URL": {
+          "description": "URL pública da Evolution (preencha após gerar domínio)",
+          "required": true
+        }
+      },
+      "healthcheck": {
+        "path": "/",
+        "timeout": 30
+      }
+    },
+    {
+      "name": "postgres",
+      "source": {
+        "image": "postgres:15-alpine"
+      },
+      "variables": {
+        "POSTGRES_USER": { "default": "evolution" },
+        "POSTGRES_PASSWORD": { "default": "evolution", "generator": "secret" },
+        "POSTGRES_DB": { "default": "evolution" }
+      }
+    },
+    {
+      "name": "redis",
+      "source": {
+        "image": "redis:7-alpine"
+      }
+    },
+    {
+      "name": "app",
+      "source": {
+        "repo": "SEU-USUARIO-GITHUB/whatsapp-ofertas-kit",
+        "rootDirectory": "recipes/node-cron"
+      },
+      "variables": {
+        "EVOLUTION_API_URL": {
+          "description": "URL da Evolution (use o domínio do serviço evolution)",
+          "required": true,
+          "reference": "evolution.SERVER_URL"
+        },
+        "EVOLUTION_API_KEY": {
+          "description": "Mesma chave da Evolution",
+          "required": true,
+          "reference": "evolution.AUTHENTICATION_API_KEY"
+        },
+        "EVOLUTION_INSTANCE": { "default": "ofertas" },
+        "WHATSAPP_TARGET": {
+          "description": "JID do grupo (120363...@g.us)",
+          "required": true
+        },
+        "PUBLIC_BASE_URL": {
+          "description": "URL pública do app (para preview card)",
+          "required": false
+        },
+        "LINK_SECRET": {
+          "description": "Segredo para assinar links de preview (mín. 16 chars)",
+          "required": false,
+          "generator": "secret32"
+        },
+        "CRON_SECRET": {
+          "description": "Protege GET /cron",
+          "required": false,
+          "generator": "secret32"
+        },
+        "ADMIN_TOKEN": {
+          "description": "Protege POST /send",
+          "required": false,
+          "generator": "secret32"
+        },
+        "TIMEZONE": { "default": "America/Sao_Paulo" },
+        "SEND_HOUR": { "default": "9" },
+        "PORT": { "default": "3000" },
+        "STATE_FILE": { "default": "/data/state.json" }
+      },
+      "volumes": [
+        { "mountPath": "/data" }
+      ],
+      "healthcheck": {
+        "path": "/health",
+        "timeout": 30
+      }
+    }
+  ]
+}

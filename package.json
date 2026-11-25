@@ -1,0 +1,18 @@
+{
+  "name": "whatsapp-ofertas-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Kit para montar sua automação de ofertas e links de produtos no WhatsApp — guia + código.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.9"
+  },
+  "scripts": {
+    "sync-core": "node scripts/sync-core.mjs recipes/node-cron && node scripts/sync-core.mjs recipes/nextjs-site",
+    "setup": "node scripts/setup.mjs",
+    "typecheck": "npm --prefix packages/core run typecheck && npm --prefix recipes/node-cron run typecheck && npm --prefix recipes/nextjs-site run typecheck",
+    "test": "npm --prefix packages/core test",
+    "build": "npm --prefix recipes/nextjs-site run build",
+    "check": "npm run sync-core && npm run typecheck && npm run test"
+  }
+}

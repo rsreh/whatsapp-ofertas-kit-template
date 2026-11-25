@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+.env
+.env.*
+!.env.example
+.next
+.data
+*.log
+.DS_Store
+Thumbs.db
+.git

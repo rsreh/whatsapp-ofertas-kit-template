@@ -1,0 +1,64 @@
+# Compose completo: Evolution API + app (node-cron) no mesmo host.
+# Uso:
+#   cd infra
+#   cp docker-evolution/.env.example docker-evolution/.env   # edite AUTHENTICATION_API_KEY
+#   cp ../recipes/node-cron/.env.example ../recipes/node-cron/.env  # edite variáveis
+#   docker compose -f docker-compose.full.yml up -d --build
+#
+# Para HTTPS, coloque Caddy/Traefik na frente (veja docs/09-deploy.md).
+
+services:
+  evolution:
+    image: atendai/evolution-api:v2.1.1
+    restart: unless-stopped
+    env_file:
+      - ./docker-evolution/.env
+    ports:
+      - "8080:8080"
+    volumes:
+      - evolution_instances:/evolution/instances
+      - evolution_store:/evolution/store
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: evolution
+      POSTGRES_PASSWORD: evolution
+      POSTGRES_DB: evolution
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+  app:
+    build:
+      context: ../recipes/node-cron
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ../recipes/node-cron/.env
+    environment:
+      EVOLUTION_API_URL: http://evolution:8080
+      PORT: "3001"
+      STATE_FILE: /data/state.json
+    ports:
+      - "3001:3001"
+    volumes:
+      - app_data:/data
+    depends_on:
+      - evolution
+
+volumes:
+  evolution_instances:
+  evolution_store:
+  postgres_data:
+  redis_data:
+  app_data:

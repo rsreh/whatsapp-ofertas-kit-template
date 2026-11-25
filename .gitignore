@@ -1,0 +1,42 @@
+# dependências
+node_modules/
+.pnp
+.pnp.js
+
+# builds
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+.turbo/
+
+# ambiente e segredos
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+
+# estado local
+.data/
+*.sqlite
+*.db
+*.log
+logs/
+
+# sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# editores
+.vscode/
+.idea/
+*.swp
+
+# deploy
+.vercel/
+.netlify/

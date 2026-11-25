@@ -1,0 +1,32 @@
+name: check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: |
+            packages/core/package-lock.json
+            recipes/node-cron/package-lock.json
+            recipes/nextjs-site/package-lock.json
+      - name: Instalar dependências
+        run: |
+          npm ci --prefix packages/core
+          npm ci --prefix recipes/node-cron
+          npm ci --prefix recipes/nextjs-site
+      - name: Sync core
+        run: npm run sync-core
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Testes
+        run: npm test
+      - name: Build Next.js
+        run: npm --prefix recipes/nextjs-site run build

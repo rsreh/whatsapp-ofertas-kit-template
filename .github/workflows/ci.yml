@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Typecheck, testes e build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            packages/core/package-lock.json
+            recipes/node-cron/package-lock.json
+            recipes/nextjs-site/package-lock.json
+
+      - name: Instalar núcleo
+        run: npm ci --prefix packages/core
+
+      - name: Instalar node-cron
+        run: npm ci --prefix recipes/node-cron
+
+      - name: Instalar nextjs-site
+        run: npm ci --prefix recipes/nextjs-site
+
+      - name: Sincronizar núcleo
+        run: npm run sync-core
+
+      - name: Verificar cópias sincronizadas
+        run: |
+          if [ -n "$(git status --porcelain -- recipes/*/src/core)" ]; then
+            echo "::error::recipes/*/src/core está dessincronizado. Rode 'npm run sync-core' e commite."
+            git --no-pager diff --stat -- recipes/*/src/core
+            exit 1
+          fi
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Testes
+        run: npm test
+
+      - name: Build Next.js
+        run: npm --prefix recipes/nextjs-site run build

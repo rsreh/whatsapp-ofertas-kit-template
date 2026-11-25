@@ -1,0 +1,20 @@
+{
+  "name": "@whatsapp-ofertas/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Núcleo reutilizável do whatsapp-ofertas-kit.",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

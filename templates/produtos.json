@@ -1,0 +1,28 @@
+{
+  "products": [
+    {
+      "id": "exemplo-1",
+      "title": "Produto de exemplo com desconto",
+      "url": "https://example.com/produto-1",
+      "price": 89.9,
+      "originalPrice": 129.9,
+      "discountRate": 31,
+      "imageUrl": "https://example.com/produto-1.jpg",
+      "shopName": "Loja Exemplo",
+      "note": "Cupom FRETE10"
+    },
+    {
+      "id": "exemplo-2",
+      "title": "Outro produto para o rodízio",
+      "url": "https://example.com/produto-2",
+      "price": 49.9,
+      "shopName": "Loja Exemplo"
+    },
+    {
+      "id": "exemplo-3",
+      "title": "Produto sem preço cadastrado",
+      "url": "https://example.com/produto-3",
+      "note": "Preço no link"
+    }
+  ]
+}
