@@ -1,7 +1,7 @@
 {
   "name": "whatsapp-ofertas-kit",
   "description": "Automação de ofertas no WhatsApp: Evolution API + app node-cron (preview, cron, envio).",
-  "icon": "https://raw.githubusercontent.com/SEU-USUARIO-GITHUB/whatsapp-ofertas-kit/main/docs/icon.png",
+  "icon": "https://raw.githubusercontent.com/rsreh/whatsapp-ofertas-kit/main/docs/icon.png",
   "services": [
     {
       "name": "evolution",
@@ -44,7 +44,7 @@
     {
       "name": "app",
       "source": {
-        "repo": "SEU-USUARIO-GITHUB/whatsapp-ofertas-kit",
+        "repo": "rsreh/whatsapp-ofertas-kit",
         "rootDirectory": "recipes/node-cron"
       },
       "variables": {
