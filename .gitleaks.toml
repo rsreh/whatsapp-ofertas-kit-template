@@ -25,4 +25,5 @@ regexes = [
   '''SEU_JID_AQUI''',
   '''segredo-de-teste''',
   '''uma-chave-aleatoria-com-32-caracteres''',
+  '''outro-segredo-com-32-caracteres''',
 ]
