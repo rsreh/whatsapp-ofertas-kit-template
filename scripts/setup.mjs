@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Setup interativo: gera .env para a receita escolhida.
 // Uso: node scripts/setup.mjs [node-cron|nextjs-site]
-import { createInterface } from "node:readline/promises";
+import { createInterface } from "node:readline";
 import { stdin as input, stdout as output } from "node:process";
 import { writeFileSync, existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -23,17 +23,46 @@ if (!existsSync(examplePath)) {
   process.exit(1);
 }
 
-const rl = createInterface({ input, output });
+const isTTY = Boolean(input.isTTY);
+
+let rl = null;
+let queue = [];
+let qi = 0;
+
+if (isTTY) {
+  rl = createInterface({ input, output });
+} else {
+  // Lê toda a entrada antes de perguntar (evita corrida do readline com pipes).
+  const chunks = [];
+  input.on("data", (c) => chunks.push(c));
+  await new Promise((resolveP) => input.on("end", resolveP));
+  queue = Buffer.concat(chunks)
+    .toString("utf8")
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/);
+}
+
+async function askLine(prompt) {
+  if (isTTY) {
+    return new Promise((res) => {
+      rl.question(prompt, (answer) => res(answer));
+    });
+  }
+  output.write(prompt);
+  const ans = queue[qi++] ?? "";
+  output.write(ans + "\n");
+  return ans;
+}
 
 async function ask(label, fallback = "") {
   const suffix = fallback ? ` [${fallback}]` : "";
-  const answer = await rl.question(`${label}${suffix}: `);
-  return answer.trim() || fallback;
+  const answer = await askLine(`${label}${suffix}: `);
+  return (answer ?? "").trim() || fallback;
 }
 
 async function askSecret(label) {
-  const answer = await rl.question(`${label}: `);
-  return answer.trim();
+  const answer = await askLine(`${label}: `);
+  return (answer ?? "").trim();
 }
 
 console.log(`\nSetup interativo — receita: ${recipe}\n`);
@@ -66,9 +95,9 @@ vars.SHOPEE_KEYWORDS = vars.SHOPEE_APP_ID
   : "";
 vars.SHOPEE_MIN_DISCOUNT = vars.SHOPEE_APP_ID
   ? await ask("Shopee desconto mínimo (%)", "10")
-  : "";
+  : "10";
 
-rl.close();
+if (rl) rl.close();
 
 // Monta o .env na ordem do .env.example
 const example = readFileSync(examplePath, "utf8");
@@ -89,7 +118,6 @@ for (const line of lines) {
     out.push(line);
   }
 }
-// Acrescenta quaisquer chaves não presentes no example
 for (const [k, v] of Object.entries(vars)) {
   if (!written.has(k)) out.push(`${k}="${v}"`);
 }
