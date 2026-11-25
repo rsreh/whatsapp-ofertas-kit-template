@@ -147,6 +147,17 @@ as variáveis de ambiente para você preencher.
 
 > Substitua `seu-usuario` pelo seu usuário/org do GitHub antes de publicar.
 
+## Setup interativo
+
+Para quem não quer editar `.env` manualmente:
+
+```bash
+npm run setup -- node-cron      # gera recipes/node-cron/.env
+npm run setup -- nextjs-site    # gera recipes/nextjs-site/.env
+```
+
+O script pergunta as variáveis e preserva os comentários do `.env.example`.
+
 ## Comandos do repositório
 
 ```bash
